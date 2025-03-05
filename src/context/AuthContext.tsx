@@ -16,6 +16,10 @@ type AuthContextType = {
     password: string
   ) => Promise<{ error: Error | null; data: any }>;
   signOut: () => Promise<void>;
+  updateProfile: (data: {
+    full_name?: string;
+    avatar_url?: string;
+  }) => Promise<{ error: Error | null; data: any }>;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -27,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     // get initial session
@@ -80,6 +84,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     await supabase.auth.signOut();
   };
 
+  const updateProfile = async (profileData: {
+    full_name?: string;
+    avatar_url?: string;
+  }) => {
+    if (!user)
+      return { error: new Error("User must be authenticated"), data: null };
+
+    const { error: authError } = await supabase.auth.updateUser({
+      data: profileData,
+    });
+
+    if (authError) {
+      return { error: authError, data: null };
+    }
+
+    // update profile in the profiles table
+    const { data, error } = await supabase
+      .from("profiles")
+      .update(profileData)
+      .eq("id", user.id)
+      .select();
+
+    return { data, error };
+  };
+
   const value = {
     session,
     user,
@@ -87,6 +116,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signIn,
     signUp,
     signOut,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
