@@ -45,7 +45,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSuccess }) => {
     <div className='w-full max-w-md'>
       <form
         onSubmit={handleSubmit}
-        className='bg-white shadow-md rounded-lg px08 pt-6 pb-8 mb-4'
+        className='bg-white shadow-md rounded-lg px-8 pt-6 pb-8 mb-4'
       >
         <h2 className='text-2xl font-bold mb-6 text-center text-gray-800'>
           {type === "login" ? "Sign In" : "Create Account"}
@@ -101,6 +101,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSuccess }) => {
               placeholder='email@example.com'
               required
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete='off'
             />
           </div>
         </div>
@@ -128,7 +129,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSuccess }) => {
             />
             <button
               type='button'
-              className='absolute inset-y-0 right-0 pr-3 flex-items-center'
+              className='absolute inset-y-0 right-0 pr-3 flex-items-center cursor-pointer'
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? (
@@ -144,7 +145,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSuccess }) => {
           <button
             type='submit'
             disabled={loading}
-            className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded focus:outline-none focus:shadow-outline ${
+            className={`w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 rounded focus:outline-none focus:shadow-outline cursor-pointer ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
