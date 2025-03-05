@@ -77,6 +77,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type, onSuccess }) => {
                 placeholder='John Doe'
                 required
                 onChange={(e) => setFullName(e.target.value)}
+                autoComplete='off'
               />
             </div>
           </div>

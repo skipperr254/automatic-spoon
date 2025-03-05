@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
         <Route
           path='/dashboard'
           element={
