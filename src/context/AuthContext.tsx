@@ -89,18 +89,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     signOut,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
 
   if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvide");
+    throw new Error("useAuth must be used within an AuthProvider");
   }
 
   return context;

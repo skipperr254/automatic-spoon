@@ -1,77 +1,34 @@
-import React, { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import AuthForm from "../components/AuthForm";
 
 const Login: React.FC = () => {
-  const [error, setError] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-  };
+  // redirect if already logged in
+  useEffect(() => {
+    if (user) navigate("/dashboard");
+  }, [user, navigate]);
 
   return (
-    <div className='max-w-md mx-auto bg-white p-8 rounded-lg shadow-md'>
-      <h1 className='text-3xl font-bold mb-4 text-center'>Login</h1>
-      <p className='text-center mb-6'>Welcome back!</p>
-
-      {error && (
-        <div className='bg-red-100 text-red-700 p-3 rounded mb-4'>{error}</div>
-      )}
-
-      <form onSubmit={handleSubmit}>
-        <div className='mb-4'>
-          <label className='block text-gray-700 mb-2' htmlFor='email'>
-            Email
-          </label>
-          <input
-            type='text'
-            id='email'
-            className='w-full p-2 border rounded'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete='off'
-          />
-        </div>
-
-        <div className='mb-6'>
-          <label className='block text-gray-700 mb-2' htmlFor='email'>
-            Password
-          </label>
-          <input
-            type='password'
-            id='password'
-            className='w-full p-2 border rounded'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            autoComplete='off'
-          />
-
-          <div className='mt-2 text-right'>
-            <Link to='/reset-password' className='text-blue-600 text-sm'>
-              Forgot Password?
-            </Link>
-          </div>
-        </div>
-
-        <button
-          type='submit'
-          className='w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 cursor-pointer'
-          disabled={loading}
+    <div className='min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8'>
+      <h2 className='mt-6 text-center text-3xl font-extrabold text-gray-900'>
+        Sign in to your account
+      </h2>
+      <p className='mt-2 text-center text-sm text-gray-600'>
+        Or{" "}
+        <Link
+          to='/signup'
+          className='font-medium text-blue-600 hover:text-blue-500'
         >
-          {loading ? "Loading" : "Login"}
-        </button>
-      </form>
-
-      <div className='mt-4 text-center text-sm'>
-        Don't have an account?{" "}
-        <Link to='/signup' className='text-blue-600'>
-          Sign Up
+          create a new account
         </Link>
+      </p>
+
+      <div className='mt-8 sm:mx-auto sm:w-full sm:max-w-md'>
+        <AuthForm type='login' onSuccess={() => navigate("/dashboard")} />
       </div>
     </div>
   );
