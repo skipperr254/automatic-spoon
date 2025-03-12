@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { LogOut, User } from "lucide-react";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
+  const isAdmin = user?.app_metadata?.role === "admin";
+
   const navigate = useNavigate();
 
   useEffect(() => {}, []);
@@ -60,6 +62,13 @@ const Navbar: React.FC = () => {
                   {user.user_metadata.username ||
                     user.user_metadata.full_name ||
                     user.email}
+                </Link>
+                <Link
+                  to='/admin'
+                  className='flex items-center text-sm font-medium text-gray-700 hover:text-gray-800'
+                >
+                  <LayoutDashboard size={20} className='mr-1' />
+                  Admin
                 </Link>
                 <button
                   onClick={handleSignOut}

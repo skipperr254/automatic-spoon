@@ -8,6 +8,11 @@ import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import ProductList from "./pages/ProductList";
 import ProductDetail from "./pages/ProductDetail";
+import AddProduct from "./pages/admin/AddProduct";
+import AdminRoute from "./components/AdminRoute";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminOrders from "./pages/admin/Orders";
+import AdminCustomers from "./pages/admin/Customers";
 
 function App() {
   return (
@@ -19,6 +24,8 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/products' element={<ProductList />} />
         <Route path='/product/:slug' element={<ProductDetail />} />
+
+        {/* Protected Routes */}
         <Route
           path='/dashboard'
           element={
@@ -35,6 +42,51 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Admin Routes */}
+        <Route
+          path='/admin'
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path='/admin/products'
+          element={
+            <AdminRoute>
+              <ProductList />
+            </AdminRoute>
+          }
+        />
+
+        <Route
+          path='/admin/products/new'
+          element={
+            <AdminRoute>
+              <AddProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path='/admin/orders'
+          element={
+            <AdminRoute>
+              <AdminOrders />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path='/admin/customers'
+          element={
+            <AdminRoute>
+              <AdminCustomers />
+            </AdminRoute>
+          }
+        />
+
         <Route path='*' element={<Navigate to='/' replace />} />
       </Routes>
     </div>
