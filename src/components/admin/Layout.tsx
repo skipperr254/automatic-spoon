@@ -6,7 +6,6 @@ import {
   Package,
   Users,
   ShoppingBag,
-  Tags,
   Settings,
   LogOut,
   Menu,
@@ -30,7 +29,6 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     { name: "Products", href: "/admin/products", icon: Package },
     { name: "Orders", href: "/admin/orders", icon: ShoppingBag },
     { name: "Customers", href: "/admin/customers", icon: Users },
-    { name: "Categories", href: "/admin/categories", icon: Tags },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 

@@ -13,6 +13,7 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminOrders from "./pages/admin/Orders";
 import AdminCustomers from "./pages/admin/Customers";
+import AdminProductList from "./pages/admin/ProductList";
 
 function App() {
   return (
@@ -57,7 +58,7 @@ function App() {
           path='/admin/products'
           element={
             <AdminRoute>
-              <ProductList />
+              <AdminProductList />
             </AdminRoute>
           }
         />
