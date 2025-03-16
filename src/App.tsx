@@ -14,6 +14,9 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminOrders from "./pages/admin/Orders";
 import AdminCustomers from "./pages/admin/Customers";
 import AdminProductList from "./pages/admin/ProductList";
+import AboutUs from "./pages/About";
+import ContactUs from "./pages/Contact";
+import EditProduct from "./pages/admin/EditProduct";
 
 function App() {
   return (
@@ -25,6 +28,8 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/products' element={<ProductList />} />
         <Route path='/product/:slug' element={<ProductDetail />} />
+        <Route path='/about' element={<AboutUs />} />
+        <Route path='/contact' element={<ContactUs />} />
 
         {/* Protected Routes */}
         <Route
@@ -68,6 +73,14 @@ function App() {
           element={
             <AdminRoute>
               <AddProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path='/admin/products/:slug/edit'
+          element={
+            <AdminRoute>
+              <EditProduct />
             </AdminRoute>
           }
         />

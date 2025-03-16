@@ -55,7 +55,7 @@ const Navbar: React.FC = () => {
                     : "text-white"
                 }`}
               >
-                ShopNamee
+                Shopee
               </span>
             </Link>
             <div className='hidden sm:ml-6 sm:flex sm:space-x-8'>

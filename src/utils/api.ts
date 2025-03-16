@@ -28,7 +28,7 @@ export const api = {
       category,
       brand,
       featured,
-      limit = 12,
+      limit = 30,
       offset = 0,
       search,
     }: {
@@ -161,7 +161,8 @@ export const api = {
     ) {
       const { data: productData, error: productError } = await supabase
         .from("products")
-        .update({
+        .upsert({
+          id: id,
           name: product.name,
           slug: product.slug,
           description: product.description,
@@ -172,7 +173,6 @@ export const api = {
           stock: product.stock,
           featured: product.featured,
         })
-        .eq("id", id)
         .select()
         .single();
 

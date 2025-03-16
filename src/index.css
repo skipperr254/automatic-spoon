@@ -5,3 +5,15 @@
 @import "swiper/css/scrollbar";
 @import "swiper/css";
 @import "swiper/css/effect-coverflow";
+
+.toast.success {
+  background-color: #38a169; /* Green */
+}
+
+.toast.error {
+  background-color: #e53e3e; /* Red */
+}
+
+.toast.info {
+  background-color: #3182ce; /* Blue */
+}

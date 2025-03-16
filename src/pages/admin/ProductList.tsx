@@ -112,7 +112,7 @@ const AdminProductList: React.FC = () => {
                       <div className='mt-4 sm:mt-0'>
                         <div className='flex items-center space-x-4'>
                           <Link
-                            to={`/admin/products/${product.id}/edit`}
+                            to={`/admin/products/${product.slug}/edit`}
                             className='text-gray-400 hover:text-gray-500'
                           >
                             <Edit className='h-5 w-5' />

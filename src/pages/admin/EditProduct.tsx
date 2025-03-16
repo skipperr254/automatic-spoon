@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { api } from "../../utils/api";
+import { useNavigate, useParams } from "react-router-dom";
+import { api, Product } from "../../utils/api";
 import { Plus, Minus, Upload } from "lucide-react";
 import AdminLayout from "../../components/admin/Layout";
+import { PostgrestError } from "@supabase/supabase-js";
 
 type Image = {
   url: string;
   alt: string;
 };
 
-const AddProduct: React.FC = () => {
+const EditProduct: React.FC = () => {
   const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [images, setImages] = useState<Image[]>([{ url: "", alt: "" }]);
   const [categories, setCategories] = useState<
     Awaited<ReturnType<typeof api.categories.list>>
   >([]);
@@ -32,7 +36,45 @@ const AddProduct: React.FC = () => {
     featured: false,
   });
 
-  const [images, setImages] = useState<Image[]>([{ url: "", alt: "" }]);
+  useEffect(() => {
+    const loadProduct = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        if (!slug) throw new Error("Product slug is required");
+        const data = await api.products.getBySlug(slug);
+        setProduct(data);
+
+        const productFormData = {
+          name: data.name,
+          slug: data.slug,
+          description: data.description || "",
+          price: data.price.toString(),
+          compareAtPrice: data.compare_at_price?.toString() || "",
+          categoryId: data?.category_id || "",
+          brandId: data?.brand_id || "",
+          stock: data.stock?.toString() || "",
+          featured: data.featured || false,
+        };
+
+        const fetchedImages = data.images;
+        const newFetchedImages = fetchedImages.map((image) => ({
+          url: image.url,
+          alt: image?.alt || "",
+        }));
+
+        setImages([...newFetchedImages, ...images]);
+
+        setFormData(productFormData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load product");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProduct();
+  }, [slug]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -62,7 +104,7 @@ const AddProduct: React.FC = () => {
         throw new Error("At least one image is required");
       }
 
-      await api.products.create({
+      await api.products.update(product!.id, {
         name: formData.name,
         slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, "-"),
         description: formData.description,
@@ -79,8 +121,11 @@ const AddProduct: React.FC = () => {
 
       navigate("/admin/products");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create product");
-      console.log(err);
+      setError(
+        err instanceof Error || err instanceof PostgrestError
+          ? err.message
+          : "Failed to update product"
+      );
     } finally {
       setLoading(false);
     }
@@ -112,7 +157,7 @@ const AddProduct: React.FC = () => {
         <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
           <div className='max-w-3xl mx-auto'>
             <h1 className='text-3xl font-bold text-gray-900 mb-8'>
-              Add New Product
+              Edit "{product?.name}"
             </h1>
 
             {error && (
@@ -136,7 +181,7 @@ const AddProduct: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-600 focus:border-blue-500 sm:text-sm p-2'
                 />
               </div>
 
@@ -150,7 +195,7 @@ const AddProduct: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, slug: e.target.value })
                   }
-                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                   placeholder='auto-generated-if-empty'
                 />
               </div>
@@ -165,7 +210,7 @@ const AddProduct: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, description: e.target.value })
                   }
-                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                 />
               </div>
 
@@ -187,7 +232,7 @@ const AddProduct: React.FC = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, price: e.target.value })
                       }
-                      className='block w-full pl-7 pr-12 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                      className='block w-full pl-7 pr-12 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                     />
                   </div>
                 </div>
@@ -211,7 +256,7 @@ const AddProduct: React.FC = () => {
                           compareAtPrice: e.target.value,
                         })
                       }
-                      className='block w-full pl-7 pr-12 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                      className='block w-full pl-7 pr-12 border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                     />
                   </div>
                 </div>
@@ -227,7 +272,7 @@ const AddProduct: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, categoryId: e.target.value })
                     }
-                    className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                    className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                   >
                     <option value=''>Select a category</option>
                     {categories.map((category) => (
@@ -247,7 +292,7 @@ const AddProduct: React.FC = () => {
                     onChange={(e) =>
                       setFormData({ ...formData, brandId: e.target.value })
                     }
-                    className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                    className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                   >
                     <option value=''>Select a brand</option>
                     {brands.map((brand) => (
@@ -271,7 +316,7 @@ const AddProduct: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, stock: e.target.value })
                   }
-                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                  className='mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                 />
               </div>
 
@@ -307,7 +352,7 @@ const AddProduct: React.FC = () => {
                         onChange={(e) =>
                           handleImageChange(index, "url", e.target.value)
                         }
-                        className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        className='block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                       />
                       <input
                         type='text'
@@ -316,13 +361,13 @@ const AddProduct: React.FC = () => {
                         onChange={(e) =>
                           handleImageChange(index, "alt", e.target.value)
                         }
-                        className='mt-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm'
+                        className='mt-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2'
                       />
                     </div>
                     <button
                       type='button'
                       onClick={() => removeImage(index)}
-                      className='p-2 text-gray-400 hover:text-gray-500'
+                      className='p-2 text-gray-400 hover:text-gray-500 cursor-pointer'
                     >
                       <Minus className='h-5 w-5' />
                     </button>
@@ -342,14 +387,14 @@ const AddProduct: React.FC = () => {
                 <button
                   type='button'
                   onClick={() => navigate("/admin/products")}
-                  className='px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                  className='px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer'
                 >
                   Cancel
                 </button>
                 <button
                   type='submit'
                   disabled={loading}
-                  className='flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                  className='flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer'
                 >
                   {loading ? (
                     <>
@@ -373,12 +418,12 @@ const AddProduct: React.FC = () => {
                           d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
                         ></path>
                       </svg>
-                      Creating...
+                      Updating...
                     </>
                   ) : (
                     <>
                       <Upload className='h-4 w-4 mr-1' />
-                      Create Product
+                      Edit Product
                     </>
                   )}
                 </button>
@@ -391,4 +436,4 @@ const AddProduct: React.FC = () => {
   );
 };
 
-export default AddProduct;
+export default EditProduct;
