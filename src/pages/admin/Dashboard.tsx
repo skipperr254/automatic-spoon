@@ -21,7 +21,6 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import { format } from "date-fns";
-import { api } from "../../utils/api";
 import AdminLayout from "../../components/admin/Layout";
 
 ChartJS.register(
@@ -34,10 +33,39 @@ ChartJS.register(
   Legend
 );
 
+interface SalesData {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    fill: boolean;
+    borderColor: string;
+    tension: number;
+  }[];
+}
+
+interface Order {
+  id: string;
+  customer: string;
+  total: number;
+  status: string;
+  date: Date;
+}
+
+interface Stats {
+  totalOrders: number;
+  totalCustomers: number;
+  totalRevenue: number;
+  totalProducts: number;
+  lowStockProducts: number;
+  recentOrders: Order[];
+  salesData: SalesData;
+}
+
 const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<Stats>({
     totalOrders: 0,
     totalCustomers: 0,
     totalRevenue: 0,
@@ -69,6 +97,13 @@ const AdminDashboard: React.FC = () => {
               id: "1",
               customer: "John Doe",
               total: 129.99,
+              status: "processing",
+              date: new Date(),
+            },
+            {
+              id: "2",
+              customer: "Jane Doe",
+              total: 1599.99,
               status: "processing",
               date: new Date(),
             },
