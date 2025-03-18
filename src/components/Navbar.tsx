@@ -2,15 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import {
-  Menu,
-  X,
-  ShoppingCart,
-  User,
-  LogOut,
-  ChevronDown,
-  Search,
-} from "lucide-react";
+import { Menu, X, ShoppingCart, User, ChevronDown } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const { user, signOut } = useAuth();
@@ -68,26 +60,6 @@ const Navbar: React.FC = () => {
                 }`}
               >
                 Products
-              </Link>
-              <Link
-                to='/categories'
-                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                  isScrolled || location.pathname !== "/"
-                    ? "text-gray-900 hover:text-gray-700"
-                    : "text-white hover:text-gray-200"
-                }`}
-              >
-                Categories
-              </Link>
-              <Link
-                to='/brands'
-                className={`inline-flex items-center px-1 pt-1 text-sm font-medium ${
-                  isScrolled || location.pathname !== "/"
-                    ? "text-gray-900 hover:text-gray-700"
-                    : "text-white hover:text-gray-200"
-                }`}
-              >
-                Brands
               </Link>
             </div>
           </div>

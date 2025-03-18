@@ -17,6 +17,10 @@ import AdminProductList from "./pages/admin/ProductList";
 import AboutUs from "./pages/About";
 import ContactUs from "./pages/Contact";
 import EditProduct from "./pages/admin/EditProduct";
+import CartPage from "./pages/Cart";
+import Footer from "./components/Footer";
+import BrandProducts from "./pages/BrandProducts";
+import CategoryProducts from "./pages/CategoryProducts";
 
 function App() {
   return (
@@ -30,6 +34,8 @@ function App() {
         <Route path='/product/:slug' element={<ProductDetail />} />
         <Route path='/about' element={<AboutUs />} />
         <Route path='/contact' element={<ContactUs />} />
+        <Route path='/category/:slug' element={<CategoryProducts />} />
+        <Route path='/brand/:slug' element={<BrandProducts />} />
 
         {/* Protected Routes */}
         <Route
@@ -45,6 +51,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='/cart'
+          element={
+            <ProtectedRoute>
+              <CartPage />
             </ProtectedRoute>
           }
         />
@@ -103,6 +118,7 @@ function App() {
 
         <Route path='*' element={<Navigate to='/' replace />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

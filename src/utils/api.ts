@@ -44,8 +44,8 @@ export const api = {
         .select(
           `
           *,
-          category:categories(*),
-          brand:brands(*),
+          category:categories!inner(*),
+          brand:brands!inner(*),
           images:product_images(*)
         `
         )

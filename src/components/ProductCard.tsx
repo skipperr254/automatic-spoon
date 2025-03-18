@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Star, ShoppingCart } from "lucide-react";
 import type { Product } from "../utils/api";
+import { useCart } from "../context/CartContext";
 
 type ProductCardProps = {
   product: Product;
@@ -9,6 +10,7 @@ type ProductCardProps = {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const mainImage = product.images[0]?.url || "https://via.placeholder.com/400";
+  const { addItem } = useCart();
 
   return (
     <div className='group relative bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300'>
@@ -48,10 +50,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       </Link>
       <button
-        className='absolute bottom-4 right-4 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200'
+        className='absolute bottom-4 right-4 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200 cursor-pointer'
         onClick={(e) => {
           e.preventDefault();
-          // Add to cart functionality will be implemented later
+          addItem(product.id, 1);
         }}
       >
         <ShoppingCart className='h-5 w-5' />

@@ -4,35 +4,38 @@ import { useProducts } from "../context/ProductContext";
 import ProductCard from "../components/ProductCard";
 import { api } from "../utils/api";
 
-const BrandProducts: React.FC = () => {
+const CategoryProducts: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const { products, loading, loadProducts } = useProducts();
-  const [brand, setBrand] = useState<
-    Awaited<ReturnType<typeof api.brands.list>>[0] | null
+  const [category, setCategory] = useState<
+    Awaited<ReturnType<typeof api.categories.list>>[0] | null
   >(null);
 
   useEffect(() => {
-    const loadBrand = async () => {
+    const loadCategory = async () => {
       if (!slug) return;
-      const brands = await api.brands.list();
-      const brand = brands.find((b) => b.slug === slug);
-      setBrand(brand || null);
+      const categories = await api.categories.list();
+      const category = categories.find((b) => b.slug === slug);
+      console.log(category);
+      setCategory(category || null);
     };
 
-    loadBrand();
+    loadCategory();
   }, [slug]);
 
   useEffect(() => {
     if (slug) {
-      loadProducts({ brand: slug });
+      loadProducts({ category: slug });
     }
   }, [loadProducts, slug]);
 
-  if (!brand) {
+  if (!category) {
     return (
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-20'>
         <div className='text-center'>
-          <h2 className='text-2xl font-bold text-gray-900'>Brand not found</h2>
+          <h2 className='text-2xl font-bold text-gray-900'>
+            Category not found
+          </h2>
         </div>
       </div>
     );
@@ -41,9 +44,9 @@ const BrandProducts: React.FC = () => {
   return (
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pt-20'>
       <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900'>{brand.name}</h1>
-        {brand.description && (
-          <p className='mt-2 text-gray-600'>{brand.description}</p>
+        <h1 className='text-3xl font-bold text-gray-900'>{category.name}</h1>
+        {category.description && (
+          <p className='mt-2 text-gray-600'>{category.description}</p>
         )}
       </div>
 
@@ -53,7 +56,7 @@ const BrandProducts: React.FC = () => {
         </div>
       ) : products.length === 0 ? (
         <div className='text-center py-12'>
-          <p className='text-gray-500'>No products found for this brand</p>
+          <p className='text-gray-500'>No products found for this category</p>
           <Link
             to='/products'
             className='text-blue-600 text-2xl hover:text-blue-800 hover:underline'
@@ -72,4 +75,4 @@ const BrandProducts: React.FC = () => {
   );
 };
 
-export default BrandProducts;
+export default CategoryProducts;

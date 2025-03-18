@@ -3,7 +3,6 @@ import CategorySection from "../components/home/CategorySection";
 import FeaturedProducts from "../components/home/FeaturedProducts";
 import ProductSlider from "../components/home/ProductSlider";
 import BrandSection from "../components/home/BrandSection";
-import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -13,7 +12,6 @@ const Home = () => {
       <FeaturedProducts />
       <ProductSlider />
       <BrandSection />
-      <Footer />
     </div>
   );
 };
